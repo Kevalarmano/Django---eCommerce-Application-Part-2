@@ -1,28 +1,13 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-
-class User(AbstractUser):
-    ROLE_CHOICES = (
-        ("buyer", "Buyer"),
-        ("vendor", "Vendor"),
-    )
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default="buyer")
-
-    def is_vendor(self) -> bool:
-        return self.role == "vendor"
-
-    def is_buyer(self) -> bool:
-        return self.role == "buyer"
+from django.contrib.auth.models import User
 
 
 class Store(models.Model):
-    vendor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="stores")
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="stores")
     name = models.CharField(max_length=120)
-    description = models.TextField(blank=True)
-    logo = models.ImageField(upload_to="store_logos/", blank=True, null=True)
 
     def __str__(self):
-        return f"{self.name} (vendor={self.vendor.username})"
+        return self.name
 
 
 class Product(models.Model):
